@@ -1,3 +1,4 @@
+import django.utils.timezone as timezone
 from django.db import models
 
 class UserProfile(models.Model):
@@ -100,27 +101,24 @@ class Server(models.Model):
     #
     # tag = models.ManyToManyField('Tag',default="linux")
 
-    hostname = models.CharField('主机名',max_length=128, unique=True)
-    sn = models.CharField('SN号', max_length=64, db_index=True)
+    manage_ip = models.GenericIPAddressField('管理IP',null=True, blank=True)	#
+    hostname = models.CharField('主机名',max_length=128,blank=True)		#unique=True
+    sn = models.CharField('SN号', max_length=64,null=True,blank=True)			#db_index=True
     manufacturer = models.CharField(verbose_name='制造商', max_length=64, null=True, blank=True)
     model = models.CharField('型号', max_length=64, null=True, blank=True)
-
-    manage_ip = models.GenericIPAddressField('管理IP', null=True, blank=True)
-
     os_platform = models.CharField('系统', max_length=16, null=True, blank=True)
     os_version = models.CharField('系统版本', max_length=50, null=True, blank=True)
-
     cpu_count = models.IntegerField('CPU个数', null=True, blank=True)
     cpu_physical_count = models.IntegerField('CPU物理个数', null=True, blank=True)
     cpu_model = models.CharField('CPU型号', max_length=128, null=True, blank=True)
-
-    create_at = models.DateTimeField(auto_now_add=True, null=True,blank=True)
+    create_at = models.DateTimeField(auto_now_add=True,blank=True)
+    last_mod = models.DateTimeField('最后修改日期', auto_now = True,blank=True)
 
     class Meta:
         verbose_name_plural = "服务器表"
 
     def __str__(self):
-        return self.hostname
+        return self.manage_ip
 
 
 class Disk(models.Model):
