@@ -13,4 +13,6 @@ admin.site.register(models.Memory)
 admin.site.register(models.NIC)
 admin.site.register(models.AssetRecord)
 admin.site.register(models.ErrorLog)
+admin.site.register(models.Env)
+admin.site.register(models.Agent)
 

@@ -36,8 +36,9 @@ class BusinessUnit(models.Model):
     业务线
     """
     name = models.CharField('业务线', max_length=64, unique=True)
-    contact = models.ForeignKey('UserGroup', verbose_name='业务联系人', related_name='c',on_delete=models.CASCADE)
-    manager = models.ForeignKey('UserGroup', verbose_name='系统管理员', related_name='m',on_delete=models.CASCADE)
+    abbreviation_name = models.CharField('缩写名', max_length=32, null=True)
+    #contact = models.ForeignKey('UserProfile', verbose_name='业务联系人', related_name='c',on_delete=models.CASCADE)
+    #manager = models.ForeignKey('UserProfile', verbose_name='系统管理员', related_name='m',on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "业务线表"
@@ -72,6 +73,31 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+class Env(models.Model):
+    """
+    资产环境
+    """
+    name = models.CharField('环境名', max_length=32, unique=True)
+    abbreviation_name = models.CharField('缩写名', max_length=12, null=True)
+    class Meta:
+        verbose_name_plural = "服务器所属环境表"
+
+    def __str__(self):
+        return self.name
+
+
+class Agent(models.Model):
+    """
+    代理商
+    """
+    name = models.CharField('代理商名字', max_length=32, unique=True)
+    abbreviation_name = models.CharField('缩写名', max_length=32, null=True)
+
+    class Meta:
+        verbose_name_plural = "游戏代理商表"
+
+    def __str__(self):
+        return self.name
 
 
 class Server(models.Model):
@@ -97,12 +123,10 @@ class Server(models.Model):
     # cabinet_order = models.CharField('机柜中序号', max_length=30, null=True, blank=True)
     #
     # idc = models.ForeignKey('IDC', verbose_name='IDC机房', null=True, blank=True,on_delete=models.CASCADE)
-    # business_unit = models.ForeignKey('BusinessUnit', verbose_name='属于的业务线', null=True, blank=True,on_delete=models.CASCADE)
     #
-    # tag = models.ManyToManyField('Tag',default="linux")
-
+    #tag = models.ManyToManyField('Tag',default=1)
     manage_ip = models.GenericIPAddressField('管理IP',null=True, blank=True)	#
-    hostname = models.CharField('主机名',max_length=128,blank=True)		#unique=True
+    hostname = models.CharField('主机名',max_length=128,null=True,blank=True)		#unique=True
     sn = models.CharField('SN号', max_length=64,null=True,blank=True)			#db_index=True
     manufacturer = models.CharField(verbose_name='制造商', max_length=64, null=True, blank=True)
     model = models.CharField('型号', max_length=64, null=True, blank=True)
@@ -111,8 +135,15 @@ class Server(models.Model):
     cpu_count = models.IntegerField('CPU个数', null=True, blank=True)
     cpu_physical_count = models.IntegerField('CPU物理个数', null=True, blank=True)
     cpu_model = models.CharField('CPU型号', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(auto_now_add=True,blank=True)
-    last_mod = models.DateTimeField('最后修改日期', auto_now = True,blank=True)
+
+
+    create_at = models.DateTimeField('创建日期',null=True, default = timezone.now,blank=True)
+    last_mod = models.DateTimeField('最后修改日期',null=True, auto_now = True,blank=True)
+
+    business_unit = models.ForeignKey('BusinessUnit', default=1,verbose_name='属于的业务线', null=True, blank=True,on_delete=models.CASCADE)
+    env = models.ForeignKey('Env',default=1, verbose_name='所属环境', null=True, blank=True,on_delete=models.CASCADE)
+    agent = models.ForeignKey('Agent', default=7,verbose_name='代理商', null=True, blank=True,on_delete=models.CASCADE)
+
 
     class Meta:
         verbose_name_plural = "服务器表"
