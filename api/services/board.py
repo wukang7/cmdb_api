@@ -3,7 +3,7 @@ from cmdb import models
 
 def process_board_info(host_obj,board_dict):
     if board_dict['status'] == False:
-        print("获取主机主板信息失败%s" % (board_dict['error']))
+        print("获取{}主机主板信息失败{}".format(host_obj.manage_ip,board_dict['error']))
         return
     '''
     {'manufacturer': 'LENOVO', 'model': 'ThinkServer TS250', 'sn': 'PC0WGVR9'}

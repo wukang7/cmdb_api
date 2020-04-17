@@ -92,6 +92,7 @@ class Agent(models.Model):
     """
     name = models.CharField('代理商名字', max_length=32, unique=True)
     abbreviation_name = models.CharField('缩写名', max_length=32, null=True)
+    ssh_port = models.IntegerField('ssh端口号', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "游戏代理商表"

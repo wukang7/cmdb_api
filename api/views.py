@@ -17,8 +17,17 @@ from api.services.network import process_network_info
 @method_decorator(csrf_exempt,name='dispatch')
 class Server(View):
     def get(self,request):
-        list = [i[0] for i in models.Server.objects.all().values_list('manage_ip')]
-        return JsonResponse({"code":"0","server_list":list})
+        res = {}
+        s = models.Server.objects.all().filter(hostname="").values_list('manage_ip','agent__ssh_port')
+        iplist = []
+        for ip,port in s:
+            if port is None:
+                port=22
+            ipport="{}:{}".format(ip,port)
+            iplist.append(ipport)
+        #list = [i[0] for i in models.Server.objects.all().values_list('manage_ip','agent')]
+        res['server_list']=iplist
+        return JsonResponse(res)
 
     def post(self,request):
         server_info = request.body.decode("utf-8")
